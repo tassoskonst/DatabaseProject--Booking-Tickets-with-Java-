@@ -1,0 +1,88 @@
+QUERY A
+
+SELECT kind,count(*) from tickets group by kind;
+
+QUERY B
+
+SELECT kind, totalprice
+FROM( SELECT kind, SUM(price) AS totalprice FROM tickets GROUP BY kind  ) AS tempTable
+WHERE totalprice =
+(SELECT MAX(totalprice) FROM ( SELECT kind, SUM(price) AS totalprice FROM tickets GROUP BY kind  ) AS tempTable)
+
+QUERY C
+
+SELECT  AVG(price)
+From tickets,customers,exchange
+where (tickets.ticket_ID = exchange.ticket_ID 
+and exchange.customer_ID = customers.customer_ID) and age BETWEEN 16 AND 44 
+;
+
+QUERY D
+
+SELECT shows_categories, totalprice
+FROM( SELECT shows_categories, count(ticket_ID) AS totalprice 
+FROM tickets GROUP BY shows_categories  ) AS tempTable
+WHERE totalprice =
+(SELECT MAX(totalprice) FROM ( SELECT shows_categories, count(ticket_ID) AS totalprice 
+FROM tickets GROUP BY shows_categories  ) AS tempTable)
+
+QUERY E
+
+SELECT fullname
+FROM( SELECT fullname , count(kind) 
+AS totalcount FROM kind_fullname where kind='Students'GROUP BY fullname  ) AS tempTable
+WHERE totalcount =
+(SELECT MAX(totalcount) 
+ FROM ( SELECT fullname, count(kind)
+AS totalcount FROM kind_fullname where kind='Students' GROUP BY fullname   ) AS tempTable)
+UNION
+ SELECT fullname
+FROM( SELECT fullname , count(kind) 
+AS totalcount FROM kind_fullname where kind='VIP'GROUP BY fullname  ) AS tempTable
+WHERE totalcount =
+(SELECT MAX(totalcount) 
+ FROM ( SELECT fullname, count(kind)
+AS totalcount FROM kind_fullname where kind='VIP' GROUP BY fullname   ) AS tempTable)
+UNION
+ SELECT fullname
+FROM( SELECT fullname , count(kind) 
+AS totalcount FROM kind_fullname where kind='Economic'GROUP BY fullname  ) AS tempTable
+WHERE totalcount =
+(SELECT MAX(totalcount) 
+ FROM ( SELECT fullname, count(kind)
+AS totalcount FROM kind_fullname where kind='Economic' GROUP BY fullname   ) AS tempTable)
+UNION
+ SELECT fullname
+FROM( SELECT fullname , count(kind) 
+AS totalcount FROM kind_fullname where kind='Student'GROUP BY fullname  ) AS tempTable
+WHERE totalcount =
+(SELECT MAX(totalcount) 
+ FROM ( SELECT fullname, count(kind)
+AS totalcount FROM kind_fullname where kind='Student' GROUP BY fullname   ) AS tempTable)
+
+QUERY F
+
+ create VIEW tickets_compn as 
+select ticket_ID,tickets.com_ID,com_name
+from tickets,company
+where tickets.com_ID = company.com_ID ;
+
+select com_name
+from (select com_name,count(ticket_ID) as totalcount from tickets_compn group by com_name) as tempTable
+where totalcount =
+(SELECT MAX(totalcount)
+from (select com_name,count(ticket_ID) as totalcount from tickets_compn group by com_name) as tempTable);
+
+QUERY G
+
+select  ticket_ID,date_order from exchange
+where (date_order between '2019-05-11' and CURRENT_DATE)
+
+
+
+
+
+
+
+
+

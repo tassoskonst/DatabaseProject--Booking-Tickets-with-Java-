@@ -1,0 +1,74 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.PreparedStatement;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class Erotima4 {
+
+	public static void main(String[] args) {
+        Connection c = null;
+        PreparedStatement prepared_stmt= null;
+        ResultSet rs = null;
+        
+        try {
+
+            //Class.forName("org.postgresql.Driver");
+            c = DriverManager
+                    .getConnection("jdbc:postgresql://localhost:5432/Booking-Tickets", "postgres", "123456");
+
+            System.out.println("Opened database successfully");
+            //String data="Ramesh";
+
+            String data="den me noiazei' OR 1=1 --";
+
+            
+            // String sql=" SELECT * FROM customers WHERE name='"+data+"'"; -> Wrong prepared statement usage!
+		
+
+            String sql="SELECT kind,COUNT(*) AS total FROM tickets group by kind"; //use this
+
+            prepared_stmt = c.prepareStatement(sql);
+
+            //prepared_stmt.setString(1, data);
+            
+            //prepared_stmt.setFetchSize(2);
+            //prepared_stmt.setFetchSize(0);
+            
+            rs = prepared_stmt.executeQuery();
+            while ( rs.next() ) {
+            	String kind = rs.getString("kind");
+            	Integer total = rs.getInt("total");
+                
+                
+                System.out.println(  kind );
+                System.out.println(  total );
+                
+                
+                System.out.println();
+
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Erotima4.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (prepared_stmt != null) {
+                    prepared_stmt.close();
+                }
+                if (c != null) {
+                    c.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Erotima4.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+		
+	}
+
+}

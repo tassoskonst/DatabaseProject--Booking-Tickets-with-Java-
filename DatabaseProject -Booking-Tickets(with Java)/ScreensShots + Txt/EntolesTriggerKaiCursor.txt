@@ -1,0 +1,43 @@
+///1) gia trigger
+create or replace function update_tickets()
+returns trigger as
+$BODY$
+begin
+insert into updatePrice values (old.price,old.price-(0.3)*old.price);
+
+return new;
+end;
+$BODY$
+language plpgsql;
+
+	
+
+create trigger updates_ticket
+before update
+on tickets
+for each row
+execute procedure update_tickets();
+
+/// entoli update
+update tickets set date_end='2019-05-20',price = price-(0.3)*price where 
+ticket_id = '45-926-9430';
+
+///2) gia cursor
+CREATE OR REPLACE FUNCTION queryA()
+RETURNS SETOF varchar AS $$
+DECLARE
+  curs CURSOR FOR SELECT kind,count(*) FROM tickets group by kind;
+  row  RECORD;
+BEGIN
+  open curs;
+  LOOP
+    FETCH FROM curs INTO row;
+    EXIT WHEN NOT FOUND;
+    return next row.kind;
+    return next row.count;
+	
+  END LOOP;
+  
+  -- RAISE NOTICE '%', val;
+END; $$ LANGUAGE plpgsql;
+SELECT queryA();

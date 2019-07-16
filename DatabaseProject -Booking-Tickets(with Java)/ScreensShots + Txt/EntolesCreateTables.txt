@@ -1,0 +1,44 @@
+CREATE TABLE COMPANY
+(
+com_name text NOT NULL,
+com_afm int NOT NULL,
+com_ID varchar(20),
+PRIMARY KEY(com_ID)	
+);
+
+CREATE TABLE TICKETS
+(
+kind text NOT NULL,
+place text NOT NULL,
+price float(2),
+date_start date NOT NULL,
+date_end date NOT NULL,
+shows_categories text NOT NULL,
+com_ID varchar(20),
+ticket_ID varchar(20),
+PRIMARY KEY(ticket_ID),
+FOREIGN KEY(com_ID) references COMPANY(com_ID)
+);
+
+CREATE TABLE CUSTOMERS
+(
+afm int NOT NULL,	
+fullname text NOT NULL,
+phone_number char(10),
+email text NOT NULL,
+credit_card_Pin varchar(30),
+age int NOT NULL,
+customer_ID smallint NOT NULL,
+PRIMARY KEY(customer_ID)
+);
+
+CREATE TABLE EXCHANGE
+(
+customer_ID smallint NOT NULL,
+ticket_ID varchar(20),
+order_ID varchar(20),
+date_order date NOT NULL,
+PRIMARY KEY(order_ID),
+FOREIGN KEY(ticket_ID) references TICKETS(ticket_ID),
+FOREIGN KEY(customer_ID) references CUSTOMERS(customer_ID)
+);
